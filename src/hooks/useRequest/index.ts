@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 
 function useRequest<T>(url?: string) {
@@ -8,19 +9,21 @@ function useRequest<T>(url?: string) {
   useEffect(() => {
     if (!url) {
       setData(undefined);
-      return
+      return;
     }
     const loadData = async () => {
       setIsLoading(true);
-      try {
-        let response = await fetch(url);
-        let data = await response.json();
-        setData(data);
-      } catch (e:any) {
-        setError(e);
-      } finally {
-        setIsLoading(false);
-      }
+      axios
+        .get<T>(url)
+        .then((res) => {
+          setData(res.data);
+        })
+        .catch((err) => {
+          setError(err);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     };
     loadData();
   }, [url]);
