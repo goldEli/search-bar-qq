@@ -1,10 +1,12 @@
-import { IQQInfo } from "../../types"
-import useRequest from "../useRequest"
+import { IQQInfo } from "../../types";
+import useRequest from "../useRequest";
 
-const useQQInfo = () => {
-	const [data, isLoading, error] = useRequest<IQQInfo>("https://api.uomg.com/api/qq.info?qq=774740085")
+const useQQInfo = (qq?: string) => {
+  const [data, isLoading, error] = useRequest<IQQInfo>(
+    qq ? `https://api.uomg.com/api/qq.info?qq=${qq}` : undefined
+  );
 
-	return [data, isLoading, error] as const
-}
+  return [data, isLoading, error] as const;
+};
 
-export default useQQInfo
+export default useQQInfo;

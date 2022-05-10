@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 
-function useRequest<T>(url: string) {
+function useRequest<T>(url?: string) {
   const [data, setData] = useState<T|null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<any>();
 
   useEffect(() => {
-    if (!url) return
+    if (!url) {
+      setData(null)
+      return
+    }
     const loadData = async () => {
       setIsLoading(true);
       try {

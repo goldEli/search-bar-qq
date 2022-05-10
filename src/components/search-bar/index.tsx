@@ -1,12 +1,18 @@
-import React from "react";
+import React, { memo, useState } from "react";
+import useDebounce from "../../hooks/useDebounce";
 import useQQInfo from "../../hooks/useQQInfo";
+import ShowMessage from "../show-message";
 import "./style/index.css";
 
 interface ISearchBarProps {}
 
 const SearchBar: React.FC<ISearchBarProps> = (props) => {
-	const [data, isLoading, error] = useQQInfo();
-	console.log('%c [ data, isLoading, error ]-5', 'font-size:13px; background:pink; color:#bf2c9f;', data, isLoading, error)
+  const [searchValue, setSearchValue] = useState<string>();
+  const searchValueDebounce = useDebounce(searchValue, 500);
+  const [data, isLoading, error] = useQQInfo(searchValueDebounce);
+  const hasResult = data?.code === 1;
+  const showEmptyMessage = !hasResult && !!searchValue
+  const showErrorMessage = searchValue === ""
 
   return (
     <div className="search-bar">
@@ -14,18 +20,30 @@ const SearchBar: React.FC<ISearchBarProps> = (props) => {
       <div>
         <label className="search-bar__label">QQ</label>
         <input
+          value={searchValue}
+          onChange={(e) => {
+            setSearchValue(e.target.value);
+          }}
           className="search-bar__input"
           type="text"
           placeholder="请输入QQ号"
         />
-        <div className="search-bar__results">
+        <ShowMessage show={showErrorMessage} message="请输入QQ号" type="error" />
+        <ShowMessage show={showEmptyMessage} message="没有查询到对应QQ号" />
+        {hasResult && (
+          <div className="search-bar__results">
             <img className="logo" src={data?.qlogo} />
-            <span title="叛逆*宝贝" className="name">{data?.name}</span>
-            <span title="384755" className="qq">{data?.qq}</span>
-        </div>
+            <span title="叛逆*宝贝" className="name">
+              {data?.name}
+            </span>
+            <span title="384755" className="qq">
+              {data?.qq}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default SearchBar;
+export default memo(SearchBar);
