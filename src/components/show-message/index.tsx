@@ -14,7 +14,7 @@ const ShowMessage: React.FC<IShowMessageProps> = (props) => {
   if (!props.show) {
     return <></>
   }
-  return <div style={style}>{props.message}</div>;
+  return <span style={style}>{props.message}</span>;
 };
 
 ShowMessage.defaultProps = {

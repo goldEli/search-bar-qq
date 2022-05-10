@@ -1,6 +1,7 @@
 import React, { memo, useState } from "react";
 import useDebounce from "../../hooks/useDebounce";
 import useQQInfo from "../../hooks/useQQInfo";
+import Loading from "../loading";
 import ShowMessage from "../show-message";
 import "./style/index.css";
 
@@ -9,28 +10,16 @@ interface ISearchBarProps {}
 const SearchBar: React.FC<ISearchBarProps> = (props) => {
   const [searchValue, setSearchValue] = useState<string>();
   const searchValueDebounce = useDebounce(searchValue, 500);
-  const [data, isLoading, error] = useQQInfo(searchValueDebounce);
-  const hasResult = data?.code === 1;
-  const showEmptyMessage = !hasResult && !!searchValue
-  const showErrorMessage = searchValue === ""
+  const [data, isLoading] = useQQInfo(searchValueDebounce);
+  const showResult = data?.code === 1 && !!searchValue;
+  const showEmptyMessage = !!data && data?.code !== 1;
+  const showErrorMessage = searchValue === "";
 
-  return (
-    <div className="search-bar">
-      <h1>QQ号查询</h1>
-      <div>
-        <label className="search-bar__label">QQ</label>
-        <input
-          value={searchValue}
-          onChange={(e) => {
-            setSearchValue(e.target.value);
-          }}
-          className="search-bar__input"
-          type="text"
-          placeholder="请输入QQ号"
-        />
-        <ShowMessage show={showErrorMessage} message="请输入QQ号" type="error" />
+  const RESULT = (
+    <div>
+      <Loading loading={isLoading}>
         <ShowMessage show={showEmptyMessage} message="没有查询到对应QQ号" />
-        {hasResult && (
+        {showResult && (
           <div className="search-bar__results">
             <img className="logo" src={data?.qlogo} />
             <span title="叛逆*宝贝" className="name">
@@ -41,6 +30,30 @@ const SearchBar: React.FC<ISearchBarProps> = (props) => {
             </span>
           </div>
         )}
+      </Loading>
+    </div>
+  );
+
+  return (
+    <div className="search-bar">
+      <h1>QQ号查询</h1>
+      <div>
+        <label className="search-bar__label">QQ</label>
+        <input
+          value={searchValue}
+          onChange={(e) => {
+            setSearchValue(e.target.value.trim());
+          }}
+          className="search-bar__input"
+          type="text"
+          placeholder="请输入QQ号"
+        />
+        <ShowMessage
+          show={showErrorMessage}
+          message="请输入QQ号"
+          type="error"
+        />
+        {RESULT}
       </div>
     </div>
   );
