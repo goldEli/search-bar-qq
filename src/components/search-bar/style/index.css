@@ -1,0 +1,59 @@
+.search-bar {
+	padding: 18px;
+}
+
+.search-bar__input {
+  outline: none;
+  border: none;
+  border-bottom: 1px solid;
+	width: 100px;
+}
+.search-bar__label {
+	padding-right: 6px;
+}
+
+.search-bar__results {
+	margin-top: 18px;
+	background-color: #F6F6F6;
+	border: 1px solid #484747;
+	box-sizing: border-box;
+	width: 115px;
+	padding-right: 5px;
+	height: 40px;
+	border-radius: 8px;
+	display: grid;
+	grid-template-columns: 40px 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas: 
+    "logo name"
+    "logo qq"
+    
+}
+
+.search-bar__results .logo {
+	grid-area: logo;
+	justify-self: center;
+	align-self: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+}
+
+.search-bar__results .name {
+	grid-area: name;
+	align-self: end;
+	font-size: 12px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.search-bar__results .qq {
+	grid-area: qq;
+	align-self: start;
+	font-size: 12px;
+	color: #757175;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
