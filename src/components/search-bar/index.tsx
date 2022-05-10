@@ -10,10 +10,24 @@ interface ISearchBarProps {}
 const SearchBar: React.FC<ISearchBarProps> = (props) => {
   const [searchValue, setSearchValue] = useState<string>();
   const searchValueDebounce = useDebounce(searchValue, 500);
-  const [data, isLoading] = useQQInfo(searchValueDebounce);
+  const [errorMessage, setErrorMessage] = useState<string>();
+  const qqStr = !!errorMessage ? "" : searchValueDebounce
+  const [data, isLoading] = useQQInfo(qqStr);
   const showResult = data?.code === 1 && !!searchValue;
   const showEmptyMessage = !!data && data?.code !== 1;
-  const showErrorMessage = searchValue === "";
+  const showErrorMessage = !!errorMessage;
+
+  const handleError = (value: string) => {
+    const qqReg = /^[1-9]\d*$/;
+    if (!value) {
+      setErrorMessage("QQ号不能为空");
+    } else if (!qqReg.test(value)) {
+      setErrorMessage("QQ号为数字, 且开头不为0");
+    } else {
+      setErrorMessage("");
+    }
+    setSearchValue(value);
+  };
 
   const RESULT = (
     <div>
@@ -42,7 +56,9 @@ const SearchBar: React.FC<ISearchBarProps> = (props) => {
         <input
           value={searchValue}
           onChange={(e) => {
-            setSearchValue(e.target.value.trim());
+            const value = e.target.value.trim();
+            handleError(value);
+            setSearchValue(value);
           }}
           className="search-bar__input"
           type="text"
@@ -50,7 +66,7 @@ const SearchBar: React.FC<ISearchBarProps> = (props) => {
         />
         <ShowMessage
           show={showErrorMessage}
-          message="请输入QQ号"
+          message={errorMessage}
           type="error"
         />
         {RESULT}
