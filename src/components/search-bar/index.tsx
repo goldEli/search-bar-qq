@@ -34,6 +34,7 @@ const SearchBar: React.FC<ISearchBarProps> = (props) => {
     <>
       <label className="search-bar__label">QQ</label>
       <input
+        data-testid="qq-input"
         value={searchValue}
         onChange={(e) => {
           const value = e.target.value.trim();
