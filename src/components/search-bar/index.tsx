@@ -27,7 +27,6 @@ const SearchBar: React.FC<ISearchBarProps> = (props) => {
     } else {
       setErrorMessage("");
     }
-    setSearchValue(value);
   };
 
   const Search = (
